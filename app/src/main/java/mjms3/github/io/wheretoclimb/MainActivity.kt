@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GetSearchResultsContent() {
-    var searchResults = getSearchResults()
+    val searchResults = getSearchResults()
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
