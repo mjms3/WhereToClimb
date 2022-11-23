@@ -15,16 +15,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import mjms3.github.io.wheretoclimb.ui.theme.WhereToClimbTheme
 import java.time.LocalDateTime
+import kotlin.math.min
 
 
 data class CragSearchResult(
     val cragName: String,
     val percentageMatch: Int,
     val resultGenerationTime: LocalDateTime
-)
-{
-    init{
-        require(this.percentageMatch in 0..100)
+) {
+    init {
+        require(this.percentageMatch in 0..100) {
+            "percentageMatch must be between 0 and 100. It was ${this.percentageMatch}."
+        }
     }
 }
 
@@ -85,9 +87,14 @@ fun GetSearchResultCard(result: CragSearchResult) {
     }
 }
 
-fun getSearchResultBarColor(searchResult: CragSearchResult): Color {
-    val red = kotlin.math.min(2.0f * (1 - searchResult.percentageMatch / 100), 1.0f)
-    val green = kotlin.math.min(2.0f * searchResult.percentageMatch / 100, 1.0f)
+private fun getSearchResultBarColor(searchResult: CragSearchResult): Color {
+    val percentageMatch = searchResult.percentageMatch
+    return getColorFromPercentageMatch(percentageMatch)
+}
+
+fun getColorFromPercentageMatch(percentageMatch: Int): Color {
+    val red = min(2.0f * (1 - percentageMatch / 100), 1.0f)
+    val green = min(2.0f * percentageMatch / 100, 1.0f)
     return Color(red = red, green = green, blue = 0.0f)
 }
 
