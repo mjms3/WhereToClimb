@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import mjms3.github.io.wheretoclimb.ui.theme.WhereToClimbTheme
 import java.time.LocalDateTime
@@ -71,19 +73,36 @@ fun GetSearchResultsContent() {
 @Composable
 fun GetSearchResultCard(result: CragSearchResult) {
     val modifier = Modifier.padding(10.dp)
+    var multiplier by remember{ mutableStateOf(1f) }
     Card(
         elevation = 10.dp,
         modifier = modifier.fillMaxWidth(),
     ) {
-        Row() {
-            Canvas(modifier = Modifier.size(50.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Canvas(modifier = Modifier
+                .height(50.dp)
+                .width(5.dp)) {
                 val height = size.height
+                val width = size.width
                 drawRect(
-                    size = Size(width = 20f, height = height),
+                    size = Size(width = width, height = height),
                     color = getSearchResultBarColor(result),
                 )
             }
-            Text(text = result.cragName, modifier = modifier)
+            Text(
+                result.cragName,
+                maxLines = 1, // modify to fit your need
+                overflow = TextOverflow.Visible,
+                style = LocalTextStyle.current.copy(
+                    fontSize = LocalTextStyle.current.fontSize * multiplier
+                ),
+                onTextLayout = {
+                    if (it.hasVisualOverflow) {
+                        multiplier *= 0.9f
+                    }
+                },
+                modifier = modifier,
+            )
         }
     }
 }
@@ -111,7 +130,13 @@ fun getSearchResults(): MutableList<CragSearchResult> {
             cragName = "Shining Clough",
             percentageMatch = 2,
             resultGenerationTime = LocalDateTime.of(2022, 10, 1, 10, 0)
-        )
+        ),
+        CragSearchResult(
+            cragName = "Another crag with a really long name, yes a really really really long name",
+            percentageMatch = 50,
+            resultGenerationTime = LocalDateTime.of(2022, 10, 1, 10, 0)
+        ),
     )
+    searchResults.sortByDescending { it.percentageMatch }
     return searchResults
 }
