@@ -3,6 +3,7 @@ package mjms3.github.io.wheretoclimb
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -92,6 +93,7 @@ private fun getSearchResultBarColor(searchResult: CragSearchResult): Color {
     return getColorFromPercentageMatch(percentageMatch)
 }
 
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 fun getColorFromPercentageMatch(percentageMatch: Int): Color {
     val red = min(2.0f * (1 - percentageMatch / 100), 1.0f)
     val green = min(2.0f * percentageMatch / 100, 1.0f)
